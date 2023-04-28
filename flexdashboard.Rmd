@@ -1,0 +1,82 @@
+---
+title: "HR"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    runtime: shiny
+    source_code: embed
+---
+
+```{r setup, include=FALSE}
+#load the packages
+library(ggplot2) 
+library(dplyr) 
+library(tidyr)
+
+#loading the Dataset 
+hrm<-read.csv("C:\\Users\\Savvy Sahai\\Downloads\\HR final.csv") 
+
+#Structure of the Dataset 
+str(hrm)
+
+```
+
+
+Dashboard
+=============================
+Column {.tabset .tabset-fade .tabset-fade data-width=500}
+--------------------------------------
+
+### Satisfaction level Histogram
+```{r}
+p1<-ggplot(aes(x=satisfaction_level),data=hrm) +  
+  geom_histogram(color="black",fill="red",bins = 30) + 
+  labs(title="Satisfaction level Histogram",x='Satisfaction Level of Employees', y="Frequency") 
+
+p1 
+```
+
+### Analysis on number of Projects
+```{r}
+hrm$number_project<-factor(hrm$number_project) 
+ggplot(aes(x=number_project),data = hrm) +    
+  geom_bar(color='black',fill='#234338') + 
+  xlab("Number of Projects") +    ylab("Frequency") +  
+  labs(title="Barplot of Number of projects")
+```
+
+
+### Anslysis for variable Time spend at company
+```{r}
+table(hrm$time_spend_company) 
+ggplot(aes(x = factor(time_spend_company)),data = hrm) +    
+  geom_bar(fill = 'purple',color='black') +    
+  xlab("Time spend at compnay in years") +    
+  ylab("Frequency")+ 
+  labs(title = "Barplot of Time spend at Company") 
+```
+
+Column {.tabset .tabset-fade data-width=500}
+--------------------------------------
+
+### Analysis of Department of Work
+```{r}
+ggplot(aes(x =sales),data = hrm ) +   
+  geom_bar()  +   xlab('Department') +    
+  ylab('Counts') + 
+  coord_flip()	
+```
+
+
+### Department vs Work Accident 
+```{r}
+ggplot(hrm, aes(x = sales, y = Work_accident)) +
+  geom_point(position = position_jitter(width = 0.2)) +
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), se = FALSE) +
+  labs(x = "Department", y = "Work Accident") +
+  scale_y_continuous(breaks = c(0, 1), labels = c("No", "Yes")) +
+  theme_classic()
+
+
+```
